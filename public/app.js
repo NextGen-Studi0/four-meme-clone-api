@@ -1,4 +1,4 @@
-const API_BASE = ""; // cùng origin: https://api.codeany.pro
+const API_BASE = "const API_BASE = "const API_BASE = "https://four-meme-clone-api.onrender.com";
 
 async function fetchTokens() {
   const res = await fetch(`${API_BASE}/api/tokens`);
