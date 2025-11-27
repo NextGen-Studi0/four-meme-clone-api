@@ -9,7 +9,7 @@ app.use(express.json());
 
 const DATA_FILE = path.join(__dirname, "tokens.json");
 
-// Load file JSON mỗi lần truy cập (không cache)
+// Load tokens
 function loadTokens() {
   try {
     const raw = fs.readFileSync(DATA_FILE, "utf8");
@@ -19,23 +19,23 @@ function loadTokens() {
   }
 }
 
+// Save tokens
 function saveTokens(tokens) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(tokens, null, 2));
 }
 
-// GET ALL TOKENS
+// GET ALL
 app.get("/api/tokens", (req, res) => {
   const TOKENS = loadTokens();
-  const tokens = Object.values(TOKENS);
-  res.json(tokens);
+  res.json(Object.values(TOKENS));
 });
 
-// GET TOKEN BY CHAIN + ADDRESS
+// GET 1 TOKEN
 app.get("/api/token/:chainId/:address", (req, res) => {
   const chainId = req.params.chainId;
   const address = req.params.address.toLowerCase();
-  const TOKENS = loadTokens();
 
+  const TOKENS = loadTokens();
   const key = `${chainId}:${address}`;
   const token = TOKENS[key];
 
@@ -43,12 +43,16 @@ app.get("/api/token/:chainId/:address", (req, res) => {
   res.json(token);
 });
 
-// CREATE TOKEN METADATA
+// CREATE TOKEN
 app.post("/api/tokens", (req, res) => {
-  const TOKENS = loadTokens();
   const body = req.body;
 
+  if (!body.chainId || !body.address)
+    return res.status(400).json({ error: "Missing fields" });
+
+  const TOKENS = loadTokens();
   const key = `${body.chainId}:${body.address.toLowerCase()}`;
+
   if (TOKENS[key])
     return res.status(400).json({ error: "Token already exists" });
 
@@ -65,11 +69,11 @@ app.get("/tokenlist.json", (req, res) => {
     name: "CodeAny Token List",
     timestamp: new Date().toISOString(),
     version: { major: 1, minor: 0, patch: 0 },
-    tokens: Object.values(TOKENS),
+    tokens: Object.values(TOKENS)
   });
 });
 
-// STATIC LOGO
+// LOGO STATIC
 app.use("/logos", express.static(path.join(__dirname, "logos")));
 app.use(express.static(path.join(__dirname, "public")));
 
