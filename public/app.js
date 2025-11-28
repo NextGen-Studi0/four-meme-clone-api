@@ -1,4 +1,5 @@
-const API_BASE = "const API_BASE = "const API_BASE = "https://four-meme-clone-api.onrender.com";
+// URL backend Render
+const API_BASE = "https://four-meme-clone-api.onrender.com";
 
 async function fetchTokens() {
   const res = await fetch(`${API_BASE}/api/tokens`);
@@ -81,7 +82,9 @@ function viewOnBscScan(address) {
 // Nút Add to Wallet – dùng wallet_watchAsset
 async function addToWallet(token) {
   if (!window.ethereum) {
-    alert("Không tìm thấy ví Web3 (MetaMask / Trust / OKX). Hãy mở trong DApp browser.");
+    alert(
+      "Không tìm thấy ví Web3 (MetaMask / Trust / OKX). Hãy mở trong DApp browser."
+    );
     return;
   }
 
@@ -94,9 +97,9 @@ async function addToWallet(token) {
           address: token.address,
           symbol: token.symbol.slice(0, 11),
           decimals: token.decimals,
-          image: token.logoURI
-        }
-      }
+          image: token.logoURI,
+        },
+      },
     });
 
     if (wasAdded) {
